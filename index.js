@@ -35,7 +35,7 @@ async function run() {
 
         // short data
         app.get('/AllToys/data', async (req, res) => {
-            const result = await animalsCollections.find().sort({ name: 1 }).limit(2).toArray();
+            const result = await animalsCollections.find().sort({ name: 1 }).limit(20).toArray();
             res.send(result)
         })
         // short by name
@@ -62,9 +62,28 @@ async function run() {
         app.post('/postToy', async (req, res) => {
             const body = req.body;
             const result = await animalsCollections.insertOne(body);
-            console.log(result);
             res.send(result)
         })
+
+
+        app.get("/myToys/:email", async (req, res) => {
+            console.log(req.params.id);
+            const toys = await animalsCollections
+                .find({
+                    sellerEmail: req.params.email,
+                })
+                .toArray();
+            res.send(toys);
+        });
+
+        app.delete('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await animalsCollections.deleteOne(query)
+            res.send(result)
+            console.log(result);
+        })
+
 
 
 
