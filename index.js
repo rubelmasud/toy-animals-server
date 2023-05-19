@@ -37,7 +37,6 @@ async function run() {
         app.get('/AllToys/data', async (req, res) => {
             const result = await animalsCollections.find().sort({ name: 1 }).limit(2).toArray();
             res.send(result)
-            console.log(result);
         })
         // short by name
         app.get("/AllToys/:text", async (req, res) => {
@@ -46,25 +45,24 @@ async function run() {
                 .find({
                     $or: [
                         { name: { $regex: text, $options: "i" } },
+                        { subCategory: { $regex: text, $options: "i" } },
                     ],
                 })
                 .toArray();
             res.send(result);
         });
 
-        app.get('/AllToys/:category', async (req, res) => {
-            const category = req.params.category
-            const query = { subCategory: category }
-            const result = await animalsCollections.find(query).toArray();
-            res.send(result)
-        })
-
-
-
         app.get('/details/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await animalsCollections.findOne(query)
+            res.send(result)
+        })
+
+        app.post('/postToy', async (req, res) => {
+            const body = req.body;
+            const result = await animalsCollections.insertOne(body);
+            console.log(result);
             res.send(result)
         })
 
