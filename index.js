@@ -10,8 +10,6 @@ app.use(cors())
 app.use(express.json())
 
 
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.oikc1wt.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -28,11 +26,17 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-
         const animalsCollections = client.db('toysAnimals').collection('toys')
 
         app.get('/AllToys', async (req, res) => {
             const result = await animalsCollections.find().toArray();
+            res.send(result)
+        })
+
+        app.get('/AllToys/:category', async (req, res) => {
+            const category = req.params.category
+            const query = { subCategory: category }
+            const result = await animalsCollections.find(query).toArray();
             res.send(result)
         })
 
@@ -42,6 +46,8 @@ async function run() {
             const result = await animalsCollections.findOne(query)
             res.send(result)
         })
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
