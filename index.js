@@ -81,8 +81,24 @@ async function run() {
             const query = { _id: new ObjectId(id) }
             const result = await animalsCollections.deleteOne(query)
             res.send(result)
-            console.log(result);
         })
+
+
+        app.patch("/postToy/:id", async (req, res) => {
+            const id = req.params.id;
+            const body = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    price: body.price,
+                    availableQuantity: body.availableQuantity,
+                    description: body.description,
+                },
+            };
+            const result = await animalsCollections.updateOne(filter, updateDoc);
+            res.send(result);
+
+        });
 
 
 
