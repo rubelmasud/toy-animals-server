@@ -67,14 +67,11 @@ async function run() {
 
 
         app.get("/myToys/:email", async (req, res) => {
-            console.log(req.params.id);
             const toys = await animalsCollections
-                .find({
-                    sellerEmail: req.params.email,
-                })
-                .toArray();
+                .find({ sellerEmail: req.params.email }).sort({ price: 1 }).toArray();
             res.send(toys);
         });
+
 
         app.delete('/myToys/:id', async (req, res) => {
             const id = req.params.id;
